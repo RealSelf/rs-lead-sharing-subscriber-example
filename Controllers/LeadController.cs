@@ -1,13 +1,16 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
-using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Util;
 
 using rs_lead_sharing_subscriber_example.Models;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Text;
+using System.Net.Http;
+using System;
+using rs_lead_sharing_subscriber_example.Repository;
+using System.Linq;
 
 namespace rs_lead_sharing_subscriber_example
 {
@@ -15,38 +18,71 @@ namespace rs_lead_sharing_subscriber_example
     [ApiController]
     public class LeadController : ControllerBase
     {
-        private List<Lead> leads = new List<Lead>();
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly InMemoryDB _inMemoryDB;
 
+        public LeadController(IHttpClientFactory httpClientFactory, InMemoryDB inMemoryDB) {
+            _httpClientFactory = httpClientFactory;
+            _inMemoryDB = inMemoryDB;
+
+}
         // GET: api/Lead
         [HttpGet]
-        public IEnumerable<Lead> Get()
+        public IActionResult Get()
         {
-            return leads;
+            InMemoryLead[] leads = _inMemoryDB.Leads.ToArray();
+            return Ok(leads);
         }
 
         // GET: api/Lead/5
         [HttpGet("{id}", Name = "Get")]
-        public Lead Get(string id)
+        public IActionResult Get(string id)
         {
-            return leads.Find(lead => lead.id == id);
+            InMemoryLead lead = _inMemoryDB.Leads.Find(id);
+            if (lead == null)
+            {
+                return NotFound();
+            }
+            return Ok(lead);
         }
 
         // POST: api/Lead
         [HttpPost]
-        public async Task<Lead> Post([FromBody] object jsonInput)
+        public async Task<IActionResult> Post()
         {
-            string rawInput = jsonInput.ToString();
-            Message SNSParsedMessage = Message.ParseMessage(rawInput);
-            if (SNSParsedMessage.IsSubscriptionType)
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
-                AmazonSimpleNotificationServiceClient SNSService = new AmazonSimpleNotificationServiceClient();
-                await SNSService.ConfirmSubscriptionAsync(SNSParsedMessage.TopicArn, SNSParsedMessage.Token);
-                return null;
-            }
+                string rawInput = await reader.ReadToEndAsync();
+                Message SNSParsedMessage = Message.ParseMessage(rawInput);
 
-            dynamic message = JsonConvert.DeserializeObject(SNSParsedMessage.MessageText);
-            leads.Add((Lead)message);
-            return (Lead)message;
+                // Is Valid SNS Signature
+                if (!SNSParsedMessage.IsMessageSignatureValid())
+                {
+                    return Unauthorized("Signature not valid");
+                }
+
+                // Should we confirm the subscriber
+                if (SNSParsedMessage.IsSubscriptionType)
+                {
+                    string SNSSubscribeUrl = SNSParsedMessage.SubscribeURL;
+                    var httpClient = _httpClientFactory.CreateClient();
+                    await httpClient.GetAsync(SNSSubscribeUrl);
+                    return NoContent();
+                }
+
+                // Process Lead Message
+                SubscriptionPayload message = JsonConvert.DeserializeObject<SubscriptionPayload>(SNSParsedMessage.MessageText);
+                Console.WriteLine(message.callback);
+
+                _inMemoryDB.Leads.Add(new InMemoryLead
+                {
+                    id = message.lead.id,
+                    subscriptionPayload = SNSParsedMessage.MessageText,
+                });
+                
+                _inMemoryDB.SaveChanges();
+                return Ok(message);
+            }           
         }
     }
 }

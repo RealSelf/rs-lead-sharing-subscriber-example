@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using rs_lead_sharing_subscriber_example.Repository;
 
 namespace rs_lead_sharing_subscriber_example
 {
@@ -26,7 +21,12 @@ namespace rs_lead_sharing_subscriber_example
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.AllowEmptyInputInBodyModelBinding = true;
+            });
+            services.AddHttpClient();
+            services.AddDbContext<InMemoryDB>(opt => opt.UseInMemoryDatabase("InMemoryDB"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +47,7 @@ namespace rs_lead_sharing_subscriber_example
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }
