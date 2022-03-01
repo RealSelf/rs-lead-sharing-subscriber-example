@@ -166,4 +166,4 @@ public class Treatment
 
 
 ## License
-[MIT](LICENCE.md)
+[MIT](LICENSE.md)
