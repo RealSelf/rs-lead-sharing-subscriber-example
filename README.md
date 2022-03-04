@@ -1,3 +1,6 @@
+Terms of Service: https://www.realself.com/terms-of-service
+
+
 # Subscriber Example for RS Lead Sharing
 
 SNS API endpoint example for subscribing to a topic and processing the message payload
