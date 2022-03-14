@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.realself.com/v1/schemas/leads/new-lead-webhook/1-0-0.json",
+  "title": "New Lead Webhook",
+  "description": "This schema defines the data that is published when a new lead is created.",
+  "type": "object",
+  "required": ["lead", "callback", "token"],
+  "properties": {
+    "lead": {
+      "description": "The new lead",
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "description": "Unique identifier for this lead.",
+          "type": "string"
+        },
+        "consultation_type": {
+          "description": "The consolution types, if any, the lead has selected.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "practice": {
+          "description": "The new lead",
+          "type": "object",
+          "required": ["id", "name", "city", "state"],
+          "properties": {
+            "id": {
+              "description": "Unique identifier for this practice.",
+              "type": "string"
+            },
+            "name": {
+              "description": "Name of this practice",
+              "type": "string"
+            },
+            "city": {
+              "description": "Name of the city this practice resides",
+              "type": "string"
+            },
+            "state": {
+              "description": "Name of the state this practice resides",
+              "type": "string"
+            }
+          }
+        },
+        "prospect": {
+          "description": "The new lead",
+          "type": "object",
+          "properties": {
+            "email": {
+              "description": "Email address of the prospect",
+              "type": "string"
+            },
+            "phone": {
+              "description": "Phone number of the prospect",
+              "type": "string"
+            },
+            "name": {
+              "description": "Name of the prospect",
+              "type": "string"
+            },
+            "location": {
+              "description": "Location or city of the prospect",
+              "type": "string"
+            },
+            "state": {
+              "description": "State of the prospect",
+              "type": "string"
+            },
+            "country": {
+              "description": "Country of the prospect",
+              "type": "string"
+            }
+          }
+        },
+        "treatment": {
+          "description": "The treatment the prospect is interested in.",
+          "type": "object",
+          "required": ["id", "name"],
+          "properties": {
+            "id": {
+              "description": "Unique identifier of the treatment",
+              "type": "string"
+            },
+            "name": {
+              "description": "Name of the treatment",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "callback": {
+      "description": "Url to use for sending updates to this lead.",
+      "type": "string"
+    },
+    "token": {
+      "description": "JWS token for validation and callback.",
+      "type": "string"
+    }
+  }
+}
