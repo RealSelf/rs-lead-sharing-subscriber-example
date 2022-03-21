@@ -9,7 +9,7 @@
     "lead": {
       "description": "The new lead",
       "type": "object",
-      "required": ["id"],
+      "required": ["id", "channel"],
       "properties": {
         "id": {
           "description": "Unique identifier for this lead.",
@@ -22,8 +22,17 @@
             "type": "string"
           }
         },
+        "channel": {
+          "description": "The channel that this lead was received.",
+          "type": "string",
+          "enum": ["web", "connect"]
+        },
+        "comments": {
+          "description": "The comments that this lead specified.",
+          "type": "string"
+        },
         "practice": {
-          "description": "The new lead",
+          "description": "The practice/location for this lead.",
           "type": "object",
           "required": ["id", "name", "city", "state"],
           "properties": {
@@ -41,6 +50,21 @@
             },
             "state": {
               "description": "Name of the state this practice resides",
+              "type": "string"
+            }
+          }
+        },
+        "provider": {
+          "description": "The provider/doctor for this lead. If no provider was chosen, this will not be present",
+          "type": "object",
+          "required": ["id", "name"],
+          "properties": {
+            "id": {
+              "description": "Unique identifier for this provider.",
+              "type": "string"
+            },
+            "name": {
+              "description": "Name of this provider",
               "type": "string"
             }
           }

@@ -54,6 +54,7 @@ namespace rs_lead_sharing_subscriber_example
             {
                 string rawInput = await reader.ReadToEndAsync();
                 Message SNSParsedMessage = Message.ParseMessage(rawInput);
+                Console.WriteLine(rawInput);
 
                 // Is Valid SNS Signature
                 if (!SNSParsedMessage.IsMessageSignatureValid())
@@ -72,13 +73,22 @@ namespace rs_lead_sharing_subscriber_example
 
                 // Process Lead Message
                 SubscriptionPayload message = JsonConvert.DeserializeObject<SubscriptionPayload>(SNSParsedMessage.MessageText);
-                Console.WriteLine(message.callback);
+                Console.WriteLine(message.Callback);
 
-                _inMemoryDB.Leads.Add(new InMemoryLead
+                var leadToSave = new InMemoryLead
                 {
-                    id = message.lead.id,
+                    id = message.Lead.Id,
                     subscriptionPayload = SNSParsedMessage.MessageText,
-                });
+                };
+
+                if (_inMemoryDB.Leads.Any(n => n.id == message.Lead.Id))
+                {
+                    _inMemoryDB.Update(leadToSave);
+                } else
+                {
+                    _inMemoryDB.Leads.Add(leadToSave);
+                }
+                
                 
                 _inMemoryDB.SaveChanges();
                 return Ok(message);
