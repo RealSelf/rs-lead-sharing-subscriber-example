@@ -1,9 +1,8 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace rs_lead_sharing_subscriber_example.Models
 {
-    public class Treatment
+    public class Provider
     {
         [JsonProperty("id")]
         public string Id { get; set; }
