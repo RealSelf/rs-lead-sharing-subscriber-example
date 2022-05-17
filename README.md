@@ -131,41 +131,82 @@ SubscriptionPayload message =
 
 ### [SubscriptionPayload](Models/SubscriptionPayload.cs)
 ```csharp
-public class SubscriptionPayload
-{
-    public Lead lead { get; set; }
-    public string callback { get; set; }
-    public string token { get; set; }
-}
+    public class SubscriptionPayload
+    {
+        [JsonProperty("lead")]
+        public Lead Lead { get; set; }
+        [JsonProperty("callback")]
+        public string Callback { get; set; }
+        [JsonProperty("token")]
+        public string Token { get; set; }
+    }
 ```
 ### [Lead](Models/Lead.cs)
 ```csharp
-public class Lead
-{
-    public int id { get; set; }
-    public Patient patient { get; set; }
-    public Treatment treatment { get; set; }
-}
+    public class Lead
+    {
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("consultation_type")]
+        public string ConsultationType { get; set; }
+        [JsonProperty("channel")]
+        public string Channel { get; set; }
+        [JsonProperty("comments")]
+        public string Comments { get; set; }
+        [JsonProperty("practice")]
+        public Practice Practice { get; set; }
+        [JsonProperty("provider")]
+        public Provider Provider { get; set; }
+        [JsonProperty("prospect")]
+        public Prospect Prospect { get; set; }
+        [JsonProperty("treatment")]
+        public Treatment Treatment { get; set; }
+    }
 ```
-### [Patient](Models/Patient.cs)
+### [Prospect](Models/Prospect.cs)
 ```csharp
-public class Patient
-{
-    public string id { get; set; }
-    public string email { get; set; }
-    public string phone { get; set; }
-    public string preferred_contact_method { get; set; }
-}
+    public class Prospect
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("email")]
+        public string Email { get; set; }
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("location")]
+        public string Location { get; set; }
+        [JsonProperty("state")]
+        public string State { get; set; }
+        [JsonProperty("country")]
+        public string Country { get; set; }
+    }
 ```
 ### [Treatment](Models/Treatment.cs)
 ```csharp
-public class Treatment
-{
-    public string id { get; set; }
-    public string name { get; set; }
-}
+    public class Treatment
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+    }
 ```
-
+### [Practice](Models/Practice.cs)
+```csharp
+    public class Practice
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("city")]
+        public string City { get; set; }
+        [JsonProperty("state")]
+        public string State { get; set; }
+    }
+```
 
 
 ## License
