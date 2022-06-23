@@ -126,6 +126,8 @@ SubscriptionPayload message =
     JsonConvert.DeserializeObject<SubscriptionPayload>(SNSParsedMessage.MessageText);
 ```
 
+A complete example of a Notification message can be found [here](notification.example.json)
+
 
 ## Models
 

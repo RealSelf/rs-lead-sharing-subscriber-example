@@ -37,8 +37,6 @@ namespace rs_lead_sharing_subscriber_example
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthorization();
